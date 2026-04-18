@@ -1,62 +1,90 @@
 # 메모장 (Memo App)
 
-React + Node.js(Express) + PostgreSQL로 구현한 메모장 웹앱.
+React + Vercel Functions + PostgreSQL로 구현한 메모장 웹앱.
 
-Supabase는 **PostgreSQL DB만** 사용하고, 데이터 접근은 직접 만든 Node.js 백엔드를 통해 이루어집니다.
+Supabase는 **PostgreSQL DB만** 사용(REST/Auth 미사용), 데이터 접근은 Vercel 서버리스 함수에서 `pg`로 직접 처리합니다.
 
 ## 기술 스택
 
 - **Frontend**: React 18 + Tailwind CSS (CDN, Babel 런타임)
-- **Backend**: Node.js + Express + `pg`
-- **Database**: PostgreSQL (Supabase 무료 티어의 DB 풀러 사용)
+- **Backend**: Vercel Functions (Node.js) + `pg`
+- **Database**: PostgreSQL (Supabase 무료 티어 DB 풀러)
 
 ## 파일 구조
 
 ```
 memo-app/
-├── server.js        # Express 서버 + Postgres pool + /api/notes CRUD
-├── client.js        # React 앱 (JSX, fetch 기반 storage)
-├── index.html       # 앱 진입점 (React/Tailwind/Babel CDN)
-├── schema.sql       # 참고용 스키마 (server.js가 기동 시 자동 생성)
+├── api/
+│   ├── notes.js         # GET, POST  →  /api/notes
+│   └── notes/
+│       └── [id].js      # PUT, DELETE → /api/notes/:id
+├── lib/
+│   └── db.js            # pg Pool + 스키마 자동 초기화
+├── index.html           # 앱 진입점 (정적 파일)
+├── client.js            # React 앱 (JSX, fetch 기반 storage)
+├── schema.sql           # 참고용 스키마 (lib/db.js가 자동 실행)
 ├── package.json
-├── .env.example     # 환경변수 예시
+├── .env.example
+├── .vercelignore
 └── .gitignore
 ```
 
-## 설치 및 실행
+## 로컬 개발
 
-### 1. 저장소 클론 & 의존성 설치
+### 1. 의존성 설치
 
 ```bash
-git clone https://github.com/mmake7/memo-app.git
-cd memo-app
 npm install
 ```
 
 ### 2. 환경변수 설정
 
-`.env.example`을 `.env`로 복사하고 본인의 Postgres 연결 문자열을 입력하세요.
-
-```bash
-cp .env.example .env
-```
+`.env` 파일 생성:
 
 ```env
 DATABASE_URL=postgresql://USER:URL_ENCODED_PASSWORD@HOST:6543/postgres
-PORT=3005
 ```
 
-> 비밀번호에 `!@#$` 같은 특수문자가 있으면 **URL 인코딩**이 필요합니다.
-> 예: `!` → `%21`, `@` → `%40`, `#` → `%23`, `$` → `%24`
+> 비밀번호 특수문자는 URL 인코딩 필요: `!` → `%21`, `@` → `%40`, `#` → `%23`, `$` → `%24`
 
-### 3. 서버 실행
+### 3. 로컬 실행
 
 ```bash
-npm start
-# → Server running at http://localhost:3005
+npm run dev   # = vercel dev
 ```
 
-서버 시작 시 `notes` 테이블과 `updated_at` 자동 갱신 트리거를 자동 생성합니다.
+`http://localhost:3000` 에서 접근. 최초 로컬 실행 시 Vercel 로그인 필요.
+
+## Vercel 배포
+
+### 1. Vercel 로그인
+
+```bash
+vercel login
+```
+
+### 2. 프로젝트 초기화 & Preview 배포
+
+```bash
+vercel
+```
+
+대화형 질문에 답하면 프로젝트가 연결됩니다.
+
+### 3. 환경변수 등록
+
+```bash
+vercel env add DATABASE_URL
+```
+값으로 Postgres 연결 문자열 입력. `Production`, `Preview`, `Development` 모두 선택.
+
+또는 [Vercel 대시보드 → Project → Settings → Environment Variables](https://vercel.com/dashboard) 에서 등록.
+
+### 4. 프로덕션 배포
+
+```bash
+npm run deploy   # = vercel --prod
+```
 
 ## API
 

@@ -1,15 +1,12 @@
 {
   "name": "memo-app",
   "version": "1.0.0",
-  "description": "React + Node.js + PostgreSQL memo app",
-  "main": "server.js",
+  "description": "React + Vercel Functions + PostgreSQL memo app",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node --watch server.js"
+    "dev": "vercel dev",
+    "deploy": "vercel --prod"
   },
   "dependencies": {
-    "dotenv": "^16.4.5",
-    "express": "^4.21.2",
     "pg": "^8.13.1"
   }
 }
