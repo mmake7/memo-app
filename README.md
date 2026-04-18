@@ -4,6 +4,15 @@ React + Vercel Functions + PostgreSQL로 구현한 메모장 웹앱.
 
 Supabase는 **PostgreSQL DB만** 사용(REST/Auth 미사용), 데이터 접근은 Vercel 서버리스 함수에서 `pg`로 직접 처리합니다.
 
+## 🌐 배포된 앱
+
+**🔗 https://memo-app-ten-ashy.vercel.app**
+
+| 환경 | URL |
+|---|---|
+| Production | https://memo-app-ten-ashy.vercel.app |
+| Dashboard  | https://vercel.com/mmake7-3440s-projects/memo-app |
+
 ## 기술 스택
 
 - **Frontend**: React 18 + Tailwind CSS (CDN, Babel 런타임)
